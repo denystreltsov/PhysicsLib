@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <iostream>
 #include <utility>
+#include <cmath>
 
 //PHYS means Physics, not to contradict with another PI in another libraries
 #define TWO_PI_PHYS (2 * PI_PHYS)
@@ -150,6 +151,19 @@ public:
 
 		return std::make_pair(x, y);
 	}
+
+	  float dot_product_param(Vector& vec2)
+    	{
+        	auto result = x * vec2.x + y * vec2.y;
+        	return result;
+    	}
+
+    //Angle should be written in Degree
+    float dot_product_mag(Vector& vec2,float between_angle)
+    	{
+       	 	auto result = magnitude * vec2.magnitude * cos(degree_to_rad(between_angle));
+        	return result;
+    	}
 
 
 
