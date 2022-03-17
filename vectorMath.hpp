@@ -7,6 +7,7 @@
 #include <initializer_list>
 #include <stdexcept>
 #include <iostream>
+#include <utility>
 
 //PHYS means Physics, not to contradict with another PI in another libraries
 #define TWO_PI_PHYS (2 * PI_PHYS)
@@ -22,14 +23,14 @@
 struct degree
 {
 	degree(): angle_deg(0) {}
-	degree(float angle) : angle_deg(angle) {}
+	degree(float degree_angle) : angle_deg(degree_angle) {}
 	float angle_deg;
 };
 
 struct radian
 {
 	radian(): angle_rad(0) {}
-	radian(const float angle) : angle_rad(angle * RAD_TO_DEGREE) {}
+	radian(const float radian_angle) : angle_rad(radian_angle * RAD_TO_DEGREE) {}
 
 	float angle_rad;
 };
@@ -41,6 +42,19 @@ class Vector
 public:
 	Vector(): x(0), y(0), angle(0), magnitude(0) {}
 
+	Vector(const degree vector_angle,const float length): x(0), y(0), angle(vector_angle.angle_deg), magnitude(length)
+	{
+		x = this->calculate_parameters().first;
+		y = this->calculate_parameters().second;
+	}
+
+	Vector(const radian vector_angle, const float length) : x(0), y(0), angle(vector_angle.angle_rad), magnitude(length)
+	{
+		x = this->calculate_parameters().first;
+		y = this->calculate_parameters().second;
+	}
+
+
 
 	Vector(const float first_coordinate,const float second_coordinate) :
 					x(first_coordinate), y{second_coordinate},
@@ -49,12 +63,12 @@ public:
 
 	Vector(const float first_coordinate,const  float second_coordinate,const degree vector_angle) :
 					x(first_coordinate), y{ second_coordinate },
-					angle(vector_angle.angle_deg), magnitude(0) {}
+					angle(vector_angle.angle_deg), magnitude(this->calculate_magnitude()) {}
 
 
 	Vector(const float first_coordinate,const  float second_coordinate,const radian vector_angle) :
 		x(first_coordinate), y{ second_coordinate },
-		angle(vector_angle.angle_rad ), magnitude(0) {}
+		angle(vector_angle.angle_rad ), magnitude(this->calculate_magnitude()) {}
 
 
 	Vector(const float first_coordinate,const float second_coordinate,const radian vector_angle,const float length) :
@@ -66,6 +80,7 @@ public:
 		x(first_coordinate), y{ second_coordinate },
 		angle(vector_angle.angle_deg), magnitude(length) {}
 
+	
 
 
 
@@ -117,7 +132,27 @@ public:
 		return atan(y / x) * RAD_TO_DEGREE;
 	}
 
-	
+	static float degree_to_rad(float degree_angle)
+	{
+		return degree_angle * DEGREE_TO_RAD;
+	}
+
+	static float rad_to_degree(float radian_angle)
+	{
+		return radian_angle * RAD_TO_DEGREE;
+	}
+
+
+	std::pair<float,float> calculate_parameters()
+	{
+		x = magnitude * cos(degree_to_rad(angle));
+		y = magnitude * sin(degree_to_rad(angle));
+
+		return std::make_pair(x, y);
+	}
+
+
+
 
 private:
 	float x, y, angle, magnitude;
